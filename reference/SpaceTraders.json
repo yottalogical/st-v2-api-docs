@@ -5,7 +5,7 @@
       "email": "joel@spacetraders.io",
       "name": "Joel Brubaker"
     },
-    "description": "SpaceTraders is an open-universe game and learning platform that offers a set of HTTP endpoints to control a fleet of ships and explore a multiplayer universe.\n\nThe API is documented using [OpenAPI](https://github.com/SpaceTradersAPI/api-docs). You can send your first request right here in your browser to check the status of the game server.\n\n```json http\n{\n  \"method\": \"GET\",\n  \"url\": \"https://v2.api.spacetraders.io\",\n}\n```\n\nUnlike a traditional game, SpaceTraders does not have a first-party client or app to play the game. Instead, you can use the API to build your own client, write a script to automate your ships, or try an app built by the community.\n\nWe have a [Discord channel](https://discord.com/invite/jh6zurdWk5) where you can share your projects, ask questions, and get help from other players.\n\n\n",
+    "description": "SpaceTraders is an open-universe game and learning platform that offers a set of HTTP endpoints to control a fleet of ships and explore a multiplayer universe.\n\nThe API is documented using [OpenAPI](https://github.com/SpaceTradersAPI/api-docs). You can send your first request right here in your browser to check the status of the game server.\n\n```json http\n{\n  \"method\": \"GET\",\n  \"url\": \"https://api.spacetraders.io/v2\",\n}\n```\n\nUnlike a traditional game, SpaceTraders does not have a first-party client or app to play the game. Instead, you can use the API to build your own client, write a script to automate your ships, or try an app built by the community.\n\nWe have a [Discord channel](https://discord.com/invite/jh6zurdWk5) where you can share your projects, ask questions, and get help from other players.\n\n\n",
     "license": {
       "name": "No Permission",
       "url": "https://choosealicense.com/no-permission/"
@@ -21,7 +21,7 @@
   "servers": [
     {
       "description": "v2",
-      "url": "https://v2.api.spacetraders.io"
+      "url": "https://api.spacetraders.io/v2"
     }
   ],
   "tags": [
@@ -1158,11 +1158,15 @@
                         },
                         "ship": {
                           "$ref": "../models/Ship.json"
+                        },
+                        "transaction": {
+                          "$ref": "../models/ShipyardTransaction.json"
                         }
                       },
                       "required": [
                         "ship",
-                        "agent"
+                        "agent",
+                        "transaction"
                       ],
                       "type": "object"
                     }
@@ -1233,6 +1237,53 @@
           }
         }
       ]
+    },
+    "/my/ships/{shipSymbol}/cargo": {
+      "parameters": [
+        {
+          "description": "The symbol of the ship",
+          "in": "path",
+          "name": "shipSymbol",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "get": {
+        "description": "Retrieve the cargo of your ship.",
+        "operationId": "get-my-ship-cargo",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "",
+                  "properties": {
+                    "data": {
+                      "$ref": "../models/ShipCargo.json"
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "security": [
+          {
+            "AgentToken": []
+          }
+        ],
+        "summary": "Get Ship Cargo",
+        "tags": [
+          "fleet"
+        ]
+      }
     },
     "/my/ships/{shipSymbol}/orbit": {
       "parameters": [
@@ -1978,6 +2029,101 @@
           }
         ],
         "summary": "Navigate Ship",
+        "tags": [
+          "fleet"
+        ]
+      }
+    },
+    "/my/ships/{shipSymbol}/nav": {
+      "parameters": [
+        {
+          "description": "The ship symbol",
+          "in": "path",
+          "name": "shipSymbol",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "patch": {
+        "description": "Update the nav data of a ship, such as the flight mode.",
+        "operationId": "patch-ship-nav",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "flightMode": {
+                    "$ref": "../models/ShipNavFlightMode.json"
+                  }
+                },
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "",
+                  "properties": {
+                    "data": {
+                      "$ref": "../models/ShipNav.json"
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "The updated nav status of the ship."
+          }
+        },
+        "security": [
+          {
+            "AgentToken": []
+          }
+        ],
+        "summary": "Patch Ship Nav",
+        "tags": [
+          "fleet"
+        ]
+      },
+      "get": {
+        "description": "Get the current nav status of a ship.",
+        "operationId": "get-ship-nav",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "",
+                  "properties": {
+                    "data": {
+                      "$ref": "../models/ShipNav.json"
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "The current nav status of the ship."
+          }
+        },
+        "security": [
+          {
+            "AgentToken": []
+          }
+        ],
+        "summary": "Get Ship Nav",
         "tags": [
           "fleet"
         ]
