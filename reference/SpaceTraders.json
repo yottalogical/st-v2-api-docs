@@ -1047,7 +1047,7 @@
           {
             "schema": {
               "type": "integer",
-              "default": "0"
+              "default": 0
             },
             "in": "header",
             "name": "content-length",
@@ -1645,7 +1645,7 @@
         "parameters": [
           {
             "schema": {
-              "type": "number",
+              "type": "integer",
               "default": 0
             },
             "in": "header",
@@ -2486,7 +2486,7 @@
         "parameters": [
           {
             "schema": {
-              "type": "number",
+              "type": "integer",
               "default": 0
             },
             "in": "header",
